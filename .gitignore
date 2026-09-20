@@ -10,3 +10,4 @@ pos.db
 *.sqlite3
 *.db
 .env
+.env
