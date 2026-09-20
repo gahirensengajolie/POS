@@ -188,9 +188,13 @@ pip install -r requirements.txt
 pytest
 ```
 
-The suite covers the health check, CRUD operations for each exposed entity, pagination, password hashing, validation errors, missing resources, duplicate usernames, and the sale-item lookup workflow. GitHub Actions runs the same command on every push and on every pull request.
+The suite covers the health check, CRUD operations for each exposed entity, pagination, password hashing, JWT login, protected current-user access, invalid credentials, malformed and expired tokens, validation errors, missing resources, duplicate usernames, and the sale-item lookup workflow. GitHub Actions runs the same command on every push and on every pull request.
+
+## Authentication
+
+Users can obtain a JWT access token through `POST /auth/login` using OAuth2 form fields `username` and `password`. Send the token in an `Authorization: Bearer <token>` header to call `GET /auth/me`. `GET /auth/admin-check` additionally requires the `Admin` role. Swagger UI exposes the **Authorize** button at `/docs`; use the same username and password there. Configure `JWT_SECRET_KEY` with a long random value outside local development, and adjust `ACCESS_TOKEN_EXPIRE_MINUTES` as needed.
 
 ## Notes
 
-- Authentication/authorization (login, JWT) is out of scope; `User` stores bcrypt-hashed passwords but there's no login endpoint.
+- Authentication uses bcrypt password hashes and JWT bearer tokens. The `/auth/me` endpoint requires a valid token; broader route-level role permissions can be added as the application grows.
 - `base.metadata.create_all()` is used for simplicity instead of Alembic migrations.
