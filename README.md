@@ -175,6 +175,21 @@ Test every endpoint using **Swagger UI** (`/docs`) or **Postman**. A typical end
     - `POST` invalid data (negative `price`, missing required field, malformed email) → `422`.
     - `POST` a sale item with `quantity` greater than available stock → `400`.
 
+## Automated tests
+
+The automated suite lives in `tests/` and uses a fresh in-memory SQLite database for every test. It overrides the application's database dependency, so tests never connect to the configured PostgreSQL development database or modify `pos.db`.
+
+From the project root, create or activate a virtual environment, install the dependencies, and run:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+pytest
+```
+
+The suite covers the health check, CRUD operations for each exposed entity, pagination, password hashing, validation errors, missing resources, duplicate usernames, and the sale-item lookup workflow. GitHub Actions runs the same command on every push and on every pull request.
+
 ## Notes
 
 - Authentication/authorization (login, JWT) is out of scope; `User` stores bcrypt-hashed passwords but there's no login endpoint.

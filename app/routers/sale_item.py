@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.sale_item import SaleItemCreate, SaleItemUpdate, SaleItemOut
@@ -14,8 +14,13 @@ def create_sale_item(payload: SaleItemCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[SaleItemOut])
-def list_sale_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def list_sale_items(skip: int = Query(0, ge=0), limit: int = Query(100, gt=0), db: Session = Depends(get_db)):
     return sale_item_repo.get_all(db, skip, limit)
+
+
+@router.get("/by-sale/{sale_id}", response_model=List[SaleItemOut])
+def get_items_by_sale(sale_id: int, db: Session = Depends(get_db)):
+    return sale_item_repo.get_by_sale(db, sale_id)
 
 
 @router.get("/{sale_item_id}", response_model=SaleItemOut)
@@ -24,11 +29,6 @@ def get_sale_item(sale_item_id: int, db: Session = Depends(get_db)):
     if not obj:
         raise HTTPException(status_code=404, detail="Sale item not found")
     return obj
-
-
-@router.get("/by-sale/{sale_id}", response_model=List[SaleItemOut])
-def get_items_by_sale(sale_id: int, db: Session = Depends(get_db)):
-    return sale_item_repo.get_by_sale(db, sale_id)
 
 
 @router.put("/{sale_item_id}", response_model=SaleItemOut)

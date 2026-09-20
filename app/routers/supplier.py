@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.supplier import SupplierCreate, SupplierUpdate, SupplierOut
@@ -14,7 +14,7 @@ def create_supplier(payload: SupplierCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[SupplierOut])
-def list_suppliers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def list_suppliers(skip: int = Query(0, ge=0), limit: int = Query(100, gt=0), db: Session = Depends(get_db)):
     return supplier_repo.get_all(db, skip, limit)
 
 

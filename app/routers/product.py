@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.product import ProductCreate, ProductUpdate, ProductOut
@@ -16,7 +16,7 @@ def create_product(payload: ProductCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[ProductOut])
-def list_products(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def list_products(skip: int = Query(0, ge=0), limit: int = Query(100, gt=0), db: Session = Depends(get_db)):
     return product_repo.get_all(db, skip, limit)
 
 

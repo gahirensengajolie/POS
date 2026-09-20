@@ -16,6 +16,10 @@ def get(db: Session, category_id: int) -> Optional[Category]:
     return db.query(Category).filter(Category.id == category_id).first()
 
 
+def get_by_name(db: Session, name: str) -> Optional[Category]:
+    return db.query(Category).filter(Category.name == name).first()
+
+
 def get_all(db: Session, skip: int = 0, limit: int = 100) -> List[Category]:
     return db.query(Category).offset(skip).limit(limit).all()
 

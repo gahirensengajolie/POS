@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.sale import SaleCreate, SaleUpdate, SaleOut
@@ -14,7 +14,7 @@ def create_sale(payload: SaleCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[SaleOut])
-def list_sales(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def list_sales(skip: int = Query(0, ge=0), limit: int = Query(100, gt=0), db: Session = Depends(get_db)):
     return sale_repo.get_all(db, skip, limit)
 
 

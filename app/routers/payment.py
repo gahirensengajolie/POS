@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.schemas.payment import PaymentCreate, PaymentUpdate, PaymentOut
@@ -14,7 +14,7 @@ def create_payment(payload: PaymentCreate, db: Session = Depends(get_db)):
 
 
 @router.get("", response_model=List[PaymentOut])
-def list_payments(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def list_payments(skip: int = Query(0, ge=0), limit: int = Query(100, gt=0), db: Session = Depends(get_db)):
     return payment_repo.get_all(db, skip, limit)
 
 
