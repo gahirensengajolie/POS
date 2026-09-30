@@ -37,11 +37,10 @@ jobs:
 
   deploy:
     name: Deploy to Cloud
-    needs: test  # Only runs if the test job passes!
-    if: github.event_name == 'push' # Only deploy on real pushes, not pull requests
+    needs: test
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
       - name: Trigger Render Deploy Hook
-        # Using Render's official deploy hook mechanism
         run: |
           curl -f "${{ secrets.RENDER_DEPLOY_HOOK_URL }}"
